@@ -53,7 +53,7 @@ Input
 ~~~~~
 
 folder should be the name of the directory containing individual counts
-files, each with the formatting of \*[group]\_[ID]\ *.csv where *
+files, each with the formatting of \*[group]\_[ID]\*.csv where *
 represents wildcard.
 
 Can accept any folder name, so can load counts data that has been
@@ -190,22 +190,14 @@ facts of this relationship within one' study:
 
 .. code:: python
 
-    ls
-
-.. code:: python
-
     import brunel
     import pandas as pd
     aspartokinase = pd.read_csv('lagoon study_Aspartokinase_avg.csv')
-        
-
     %brunel data('aspartokinase') treemap x(order) y(family) color(order) size(nador) sort(nador) label(organism, nador) tooltip(#all) :: width=2000, height=2000
 
 .. code:: python
 
     aspartokinase = pd.read_csv('lagoon study_Aspartokinase_avg.csv')
-        
-
     %brunel data('aspartokinase') treemap x(order) y(family) color(order) size(oualidia) sort(oualidia) label(organism, oualidia) tooltip(#all) :: width=2000, height=2000
 
 Try this out for some of the other genes (consult the
