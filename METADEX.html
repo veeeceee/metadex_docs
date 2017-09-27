@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>An Example Workflow with a Sample Data Set &mdash; metadex 0.9.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.9.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="metadex 0.9.11 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">metadex 0.9.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="an-example-workflow-with-a-sample-data-set">
+<h1>An Example Workflow with a Sample Data Set<a class="headerlink" href="#an-example-workflow-with-a-sample-data-set" title="Permalink to this headline">¶</a></h1>
+<p>First, if you haven&#8217;t installed the package, you can do so using PyPI
+(in the terminal):</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>!pip install metadex
+</pre></div>
+</div>
+<p>Let&#8217;s get started:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>import metadex
+%matplotlib inline
+</pre></div>
+</div>
+<div class="section" id="reading-annotations-from-study-into-metadex">
+<h2>Reading Annotations from Study into Metadex<a class="headerlink" href="#reading-annotations-from-study-into-metadex" title="Permalink to this headline">¶</a></h2>
+<p>In the previous Section, we downloaded a series of annotations from a
+lagoons data set on MG-RAST. Now, we will load those annotations into
+metadex to get started, &#8216;lagoon study&#8217; being the folder/directory the
+annotations were downloaded into:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span> <span class="o">=</span> <span class="n">metadex</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="s1">&#39;lagoon study&#39;</span><span class="p">)</span>
+<span class="n">lagoons</span><span class="o">.</span><span class="n">read_annotations</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="output">
+<h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>When this step is complete the lagoon study directory should look as
+follows:</p>
+<p>lagoon study - nador_1.tsv - nador_2.tsv - oualidia_1.tsv -
+oualidia_2.tsv - nador_1_counts.csv - nador_2_counts.csv -
+oualidia_1_counts.csv - oualidia_2_counts.csv</p>
+</div>
+</div>
+<div class="section" id="load-gene-counts-matrix-into-study">
+<h2>Load Gene Counts Matrix into Study<a class="headerlink" href="#load-gene-counts-matrix-into-study" title="Permalink to this headline">¶</a></h2>
+<p>In the previous section, you downloaded the gene counts matrix from
+MG-RAST&#8217;s &#8216;Analyze&#8217; interface. Load the separated text file using its
+location, because it will help with finding genes of interest:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">load_gene_matrix</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="input">
+<h3>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<p>folder should be the name of the directory containing individual counts
+files, each with the formatting of *[group]_[ID]<a href="#id1"><span class="problematic" id="id2">*</span></a>.csv where *
+represents wildcard.</p>
+<p>Can accept any folder name, so can load counts data that has been
+annotated and/or normalised.</p>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>Output<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Creates a Study, which contains:</p>
+<p>Study.counts =&gt; list of counts DataFrames Study.groups =&gt; list of
+corresponding groups Study.iDs =&gt; list of corresponding ID within the
+groups</p>
+</div>
+<div class="section" id="determining-genes-of-interest">
+<h2>Determining Genes of Interest<a class="headerlink" href="#determining-genes-of-interest" title="Permalink to this headline">¶</a></h2>
+<p>While MG-RAST allows you to visualise genes that have changed using
+their &#8216;Analyze&#8217; interface, metadex leverages the Boruta feature
+selection method to determine differences between groups and samples and
+each level of functional hierarchy. Boruta uses a specific threshold for
+feature selection (see link here: []) and each can be manipulated as per
+yourneeds.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">determine_genes_of_interest</span><span class="p">(</span> <span class="n">lvl1pct</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">lvl2pct</span><span class="o">=</span><span class="mi">70</span><span class="p">,</span> <span class="n">lvl3pct</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">fxnpct</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At each functional level, Boruta will provide selected and weakly
+selected features. These should help guide the user as to potential
+genes of interest worth focusing on</p>
+</div>
+<div class="section" id="normalising-counts">
+<h2>Normalising Counts<a class="headerlink" href="#normalising-counts" title="Permalink to this headline">¶</a></h2>
+<p>Counts need to be normalised. Metadex takes care of this too:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">normalise_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="id4">
+<h3>Input<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Study.counts</p>
+</div>
+<div class="section" id="id5">
+<h3>Output<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>normalises Study.counts via rarefaction and recodification Study.counts
+will be replaced with the rarefied and recodified version</p>
+<p>When this step is complete the lagoon study directory should look as
+follows:</p>
+<p>lagoon study - nador_1.tsv - nador_2.tsv - oualidia_1.tsv -
+oualidia_2.tsv - nador_1_counts.csv - nador_2_counts.csv -
+oualidia_1_counts.csv - oualidia_2_counts.csv normalised_counts -
+nador_1_counts_norm.csv - nador_2_counts_norm.csv -
+oualidia_1_counts_norm.csv - oualidia_2_counts_norm.csv</p>
+</div>
+</div>
+<div class="section" id="annotating-with-lineage-information">
+<h2>Annotating with Lineage Information<a class="headerlink" href="#annotating-with-lineage-information" title="Permalink to this headline">¶</a></h2>
+<p>The counts data has species info, but this may obscure trends that occur
+along higher taxonomic levels. Thus, metadex updates the counts data
+with correspondin information for phylum, class, order, and family:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">add_lineage_info</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This step requires persistent communication with the Entrez servers, and
+will take a while. Thankfully it outputs each query to the console.</p>
+<p>lagoons.counts will have additional columns denoting phylum, class,
+order, and family for each annotation When this step is complete the
+lagoon study directory should look as follows:</p>
+<p>lagoon study - nador_1.tsv - nador_2.tsv - oualidia_1.tsv -
+oualidia_2.tsv - nador_1_counts.csv - nador_2_counts.csv -
+oualidia_1_counts.csv - oualidia_2_counts.csv normalised_counts -
+nador_1_counts_norm.csv - nador_2_counts_norm.csv -
+oualidia_1_counts_norm.csv - oualidia_2_counts_norm.csv
+norm_taxonomy - nador_1_counts_norm_taxonomy.csv -
+nador_2_counts_norm_taxonomy.csv -
+oualidia_1_counts_norm_taxonomy.csv -
+oualidia_2_counts_norm_taxonomy.csv</p>
+</div>
+<div class="section" id="sidebar-loading-study-counts-into-metadex">
+<h2>Sidebar: Loading Study Counts into Metadex<a class="headerlink" href="#sidebar-loading-study-counts-into-metadex" title="Permalink to this headline">¶</a></h2>
+<p>If you have counts files, you can load them into a Metadex study:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span> <span class="o">=</span> <span class="n">metadex</span><span class="o">.</span><span class="n">Study</span><span class="p">(</span><span class="s1">&#39;lagoon study&#39;</span><span class="p">)</span>
+<span class="c1">#If your previous step was read_annotations:</span>
+<span class="c1">#lagoons.load_counts(&#39;lagoon study&#39;)</span>
+<span class="c1">#If your previous step was normalise_counts:</span>
+<span class="c1">#lagoons.load_counts(&#39;normalised_counts&#39;)</span>
+<span class="c1">#If your previous step was add_lineage_info:</span>
+<span class="n">lagoons</span><span class="o">.</span><span class="n">load_counts</span><span class="p">(</span><span class="s1">&#39;norm_taxonomy&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Can accept any folder name, so can load counts data that has been
+annotated and/or normalised.</p>
+<p>Creates a Study, which contains: lagoons.counts =&gt; list of individual
+counts DataFrames, one per sample lagoons.groups =&gt; list of
+corresponding groups for each sample lagoons.iDs =&gt; list of
+corresponding ID within the groups</p>
+</div>
+<div class="section" id="focusing-on-gene-user-query">
+<h2>Focusing on Gene (User Query)<a class="headerlink" href="#focusing-on-gene-user-query" title="Permalink to this headline">¶</a></h2>
+<p>Once the user has a potential gene or gene family of interest in mind,
+they can zoom in to that subset of the data.</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">focus_on_gene</span><span class="p">(</span><span class="s1">&#39;aspartokinase&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="visualising-diversity-for-gene">
+<h2>Visualising Diversity for Gene<a class="headerlink" href="#visualising-diversity-for-gene" title="Permalink to this headline">¶</a></h2>
+<p>Understanding how a gene seen in an environment is distributed is a key
+insight to understanding the link between gene function and environment.
+Metadex provides ways to depict both the quantitative and qualitative
+facts of this relationship within one&#8217; study:</p>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">lagoons</span><span class="o">.</span><span class="n">visualise_diversity_for_gene</span><span class="p">(</span><span class="s1">&#39;Aspartokinase&#39;</span><span class="p">,</span> <span class="s1">&#39;aspartokinase&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">ls</span>
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>import brunel
+import pandas as pd
+aspartokinase = pd.read_csv(&#39;lagoon study_Aspartokinase_avg.csv&#39;)
+
+
+%brunel data(&#39;aspartokinase&#39;) treemap x(order) y(family) color(order) size(nador) sort(nador) label(organism, nador) tooltip(#all) :: width=2000, height=2000
+</pre></div>
+</div>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>aspartokinase = pd.read_csv(&#39;lagoon study_Aspartokinase_avg.csv&#39;)
+
+
+%brunel data(&#39;aspartokinase&#39;) treemap x(order) y(family) color(order) size(oualidia) sort(oualidia) label(organism, oualidia) tooltip(#all) :: width=2000, height=2000
+</pre></div>
+</div>
+<p>Try this out for some of the other genes (consult the
+determine_genes_of_interest output if you aren&#8217;t sure which genes to
+look at)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">An Example Workflow with a Sample Data Set</a><ul>
+<li><a class="reference internal" href="#reading-annotations-from-study-into-metadex">Reading Annotations from Study into Metadex</a><ul>
+<li><a class="reference internal" href="#output">Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#load-gene-counts-matrix-into-study">Load Gene Counts Matrix into Study</a><ul>
+<li><a class="reference internal" href="#input">Input</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">Output</a></li>
+<li><a class="reference internal" href="#determining-genes-of-interest">Determining Genes of Interest</a></li>
+<li><a class="reference internal" href="#normalising-counts">Normalising Counts</a><ul>
+<li><a class="reference internal" href="#id4">Input</a></li>
+<li><a class="reference internal" href="#id5">Output</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#annotating-with-lineage-information">Annotating with Lineage Information</a></li>
+<li><a class="reference internal" href="#sidebar-loading-study-counts-into-metadex">Sidebar: Loading Study Counts into Metadex</a></li>
+<li><a class="reference internal" href="#focusing-on-gene-user-query">Focusing on Gene (User Query)</a></li>
+<li><a class="reference internal" href="#visualising-diversity-for-gene">Visualising Diversity for Gene</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/METADEX.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">metadex 0.9.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2017, Vibhu Chandrashekhar.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
