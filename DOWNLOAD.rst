@@ -1,5 +1,5 @@
-An Example Workflow with a Sample Data Set
-==========================================
+Download the Sample Data Set
+============================
 
 First, if you haven't installed the package, you can do so using PyPI
 (in the terminal):

@@ -1,5 +1,5 @@
-An Example Workflow with a Sample Data Set
-==========================================
+An Example Workflow with a Sample Data Set (Lagoons)
+====================================================
 
 First, if you haven't installed the package, you can do so using PyPI
 (in the terminal):
